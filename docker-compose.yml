@@ -10,8 +10,8 @@ master:
   net: host
   environment:
     MESOS_ZK: zk://127.0.0.1:2181/mesos
-    MESOS_HOSTNAME: vps277115.ovh.net 
-    MESOS_IP: 51.254.202.81 
+    MESOS_HOSTNAME: ${HOSTNAME} 
+    MESOS_IP: ${IP_ADRESS} 
     MESOS_QUORUM: 1
     MESOS_CLUSTER: docker-compose
     MESOS_WORK_DIR: /var/lib/mesos
@@ -25,8 +25,8 @@ slave:
   privileged: true
   environment:
     MESOS_MASTER: zk://127.0.0.1:2181/mesos
-    MESOS_HOSTNAME: vps277115.ovh.net 
-    MESOS_IP: 51.254.202.81
+    MESOS_HOSTNAME: ${HOSTNAME} 
+    MESOS_IP: ${IP_ADRESS} 
     MESOS_CONTAINERIZERS: docker,mesos
   volumes:
     - /sys/fs/cgroup:/sys/fs/cgroup
@@ -47,12 +47,12 @@ marathon:
   environment:
     MARATHON_MASTER: zk://127.0.0.1:2181/mesos
     MARATHON_ZK: zk://127.0.0.1:2181/marathon
-    MARATHON_HOSTNAME: vps277115.ovh.net
+    MARATHON_HOSTNAME: ${HOSTNAME} 
   command: --event_subscriber http_callback
 
 traefik:
   image: containous/traefik
-  command: -c /dev/null --web --logLevel=DEBUG --marathon --marathon.domain vps277115.ovh.net --marathon.endpoint http://vps277115.ovh.net:8080 --marathon.watch
+  command: -c /dev/null --web --logLevel=DEBUG --marathon --marathon.domain vps277115.ovh.net --marathon.endpoint http://${HOSTNAME}:8080 --marathon.watch
   ports:
     - "80:80"
     - "8081:8080"
