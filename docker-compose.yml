@@ -1,0 +1,61 @@
+zk:
+  image: bobrik/zookeeper
+  net: host
+  environment:
+    ZK_CONFIG: tickTime=2000,initLimit=10,syncLimit=5,maxClientCnxns=128,forceSync=no,clientPort=2181
+    ZK_ID: 1
+
+master:
+  image: mesosphere/mesos-master:0.28.1-2.0.20.ubuntu1404
+  net: host
+  environment:
+    MESOS_ZK: zk://127.0.0.1:2181/mesos
+    MESOS_HOSTNAME: vps277115.ovh.net 
+    MESOS_IP: 51.254.202.81 
+    MESOS_QUORUM: 1
+    MESOS_CLUSTER: docker-compose
+    MESOS_WORK_DIR: /var/lib/mesos
+  ports:
+    - "5050:5050"
+
+slave:
+  image: mesosphere/mesos-slave:0.28.1-2.0.20.ubuntu1404
+  net: host
+  pid: host
+  privileged: true
+  environment:
+    MESOS_MASTER: zk://127.0.0.1:2181/mesos
+    MESOS_HOSTNAME: vps277115.ovh.net 
+    MESOS_IP: 51.254.202.81
+    MESOS_CONTAINERIZERS: docker,mesos
+  volumes:
+    - /sys/fs/cgroup:/sys/fs/cgroup
+    - /usr/bin/docker:/usr/bin/docker:ro
+    - /var/run/docker.sock:/var/run/docker.sock
+    - /etc/selinux/targeted/policy/policy.29:/etc/selinux/targeted/policy/policy.29
+    - /lib64/libsystemd.so.0:/lib/libsystemd.so.0
+    - /lib64/libselinux.so.1:/lib/libselinux.so.1
+    - /lib64/libdevmapper.so.1.02:/lib/libdevmapper.so.1.02
+    - /lib64/libgcrypt.so.20:/lib/libgcrypt.so.20
+    - /lib64/libltdl.so.7:/lib/libltdl.so.7
+    - /lib64/libdw.so.1:/lib/libdw.so.1
+    - /lib64/libelf.so.1:/lib/libelf.so.1
+
+marathon:
+  image: mesosphere/marathon:v1.1.1
+  net: host
+  environment:
+    MARATHON_MASTER: zk://127.0.0.1:2181/mesos
+    MARATHON_ZK: zk://127.0.0.1:2181/marathon
+    MARATHON_HOSTNAME: vps277115.ovh.net
+  command: --event_subscriber http_callback
+
+traefik:
+  image: containous/traefik
+  command: -c /dev/null --web --logLevel=DEBUG --marathon --marathon.domain vps277115.ovh.net --marathon.endpoint http://vps277115.ovh.net:8080 --marathon.watch
+  ports:
+    - "80:80"
+    - "8081:8080"
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+
