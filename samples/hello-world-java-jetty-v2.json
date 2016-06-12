@@ -1,0 +1,48 @@
+{
+  "id": "/hello-world",
+  "cmd": "`wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=0BzZdMomwOJJ9VXlKM0lKeDFQQTg' -O /tmp/hello-world.jar && chmod +x /tmp/hello-world.jar && java -jar /tmp/hello-world.jar`",
+  "cpus": 0.1,
+  "mem": 64,
+  "disk": 100,
+  "instances": 1,
+  "container": {
+    "type": "DOCKER",
+    "volumes": [],
+    "docker": {
+      "image": "java:8-jdk",
+      "network": "BRIDGE",
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "hostPort": 0,
+          "servicePort": 10000,
+          "protocol": "tcp",
+          "name": "8080",
+          "labels": {}
+        }
+      ],
+      "privileged": false,
+      "parameters": [],
+      "forcePullImage": false
+    }
+  },
+  "healthChecks": [
+    {
+      "path": "/",
+      "protocol": "HTTP",
+      "portIndex": 0,
+      "gracePeriodSeconds": 300,
+      "intervalSeconds": 60,
+      "timeoutSeconds": 20,
+      "maxConsecutiveFailures": 3,
+      "ignoreHttp1xx": false
+    }
+  ],
+  "portDefinitions": [
+    {
+      "port": 10000,
+      "protocol": "tcp",
+      "labels": {}
+    }
+  ]
+}
