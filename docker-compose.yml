@@ -15,6 +15,8 @@ master:
     MESOS_QUORUM: 1
     MESOS_CLUSTER: docker-compose
     MESOS_WORK_DIR: /var/lib/mesos
+#    MESOS_AUTHENTICATE_HTTP: "true"
+#    MESOS_HTTP_CREDENTIALS: "http_credentials.conf"
   ports:
     - "5050:5050"
 
@@ -48,6 +50,7 @@ marathon:
     MARATHON_MASTER: zk://127.0.0.1:2181/mesos
     MARATHON_ZK: zk://127.0.0.1:2181/marathon
     MARATHON_HOSTNAME: ${HOSTNAME} 
+    MARATHON_HTTP_CREDENTIALS: "admin:tiger"
   command: --event_subscriber http_callback
 
 traefik:
