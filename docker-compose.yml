@@ -50,15 +50,16 @@ marathon:
     MARATHON_MASTER: zk://127.0.0.1:2181/mesos
     MARATHON_ZK: zk://127.0.0.1:2181/marathon
     MARATHON_HOSTNAME: ${HOSTNAME} 
-    MARATHON_HTTP_CREDENTIALS: "admin:tiger"
+#    MARATHON_HTTP_CREDENTIALS: "admin:tiger"
   command: --event_subscriber http_callback
 
 traefik:
-  image: containous/traefik:v1.0.0-beta.771
-  command: -c /dev/null --web --logLevel=DEBUG --marathon --marathon.domain vps277115.ovh.net --marathon.endpoint http://${HOSTNAME}:8080 --marathon.watch
+  image: containous/traefik:v1.0.0-rc2
+  command: -c /dev/null --web --logLevel=DEBUG --marathon --marathon.domain="vps277115.ovh.net" --marathon.endpoint="http://${HOSTNAME}:8080" --marathon.watch --retry="true" --retry.attempts="20" --retry.maxmem="100" --accesslogsfile="/tmp/logs/access.log"
   ports:
     - "80:80"
     - "8081:8080"
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
+    - /tmp/logs:/tmp/logs
 
