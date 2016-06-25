@@ -54,8 +54,8 @@ marathon:
   command: --event_subscriber http_callback
 
 traefik:
-  image: containous/traefik:v1.0.0-rc2
-  command: -c /dev/null --web --logLevel=DEBUG --marathon --marathon.domain="vps277115.ovh.net" --marathon.endpoint="http://${HOSTNAME}:8080" --marathon.watch --retry="true" --retry.attempts="20" --retry.maxmem="100" --accesslogsfile="/tmp/logs/access.log"
+  image: containous/traefik:v1.0.0-rc3
+  command: -c /dev/null --web --logLevel=DEBUG --marathon --marathon.domain="vps277115.ovh.net" --marathon.endpoint="http://${HOSTNAME}:8080" --marathon.watch --retry="true" --retry.attempts="20" --accesslogsfile="/tmp/logs/access.log"
   ports:
     - "80:80"
     - "8081:8080"
